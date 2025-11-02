@@ -1,0 +1,15 @@
+gymnasium>=0.29
+highway-env>=1.8
+numpy>=1.24
+torch>=2.2
+torchvision>=0.17
+matplotlib>=3.8
+pandas>=2.1
+opencv-python>=4.9
+seaborn>=0.13
+shap>=0.44
+lime>=0.2
+omegaconf>=2.3
+pydantic>=2.6
+rich>=13.7
+tqdm>=4.66

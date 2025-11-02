@@ -1,0 +1,24 @@
+project:
+  name: explaining-av-decisions
+  seed: 42
+  output_dir: outputs
+
+environment:
+  name: highway-v0
+  wrappers: []
+  render: false
+
+agent:
+  algorithm: dqn
+  total_timesteps: 100000
+  eval_interval: 5000
+  save_interval: 10000
+
+logging:
+  level: INFO
+  log_dir: logs
+
+xai:
+  enable_grad_cam: true
+  enable_shap: true
+  sample_episodes: 5
