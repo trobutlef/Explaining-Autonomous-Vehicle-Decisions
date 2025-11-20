@@ -22,3 +22,8 @@ xai:
   enable_grad_cam: true
   enable_shap: true
   sample_episodes: 5
+  output_dir: outputs/gradcam
+
+data:
+  # Root containing train/ and val/ folders of BDD100K 10k split
+  bdd100k_root: data/bdd100k_subset #data/bdd100k/bdd100k/images/10k

@@ -17,6 +17,7 @@ logs/
 outputs/
 checkpoints/
 wandb/
+data/*
 
 # OS and IDE
 .DS_Store

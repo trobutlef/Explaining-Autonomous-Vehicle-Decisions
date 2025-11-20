@@ -25,7 +25,7 @@ XAI for autonomous vehicle decisions using a lightweight simulator and standard 
 ## Datasets
 
 - **Primary (perception subset)**
-  - BDD100K (use ~10k images subset): https://github.com/bdd100k/bdd100k
+  - BDD100K (use ~10k images subset): https://github.com/bdd100k/bdd100k | https://www.kaggle.com/datasets/solesensei/solesensei_bdd100k
   - KITTI (small detection subset): http://www.cvlibs.net/datasets/kitti/
   - nuScenes mini (≈7 GB): https://www.nuscenes.org/download
 - **Simulator state (tabular)**
