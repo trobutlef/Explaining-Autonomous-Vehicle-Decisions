@@ -4,15 +4,15 @@ project:
   output_dir: outputs
 
 environment:
-  name: highway-v0
+  name: roundabout-v0
   wrappers: []
   render: false
 
 agent:
   algorithm: dqn
-  total_timesteps: 100000
-  eval_interval: 5000
-  save_interval: 10000
+  total_timesteps: 20000 #100000
+  eval_interval: 2000 #5000
+  save_interval: 10000 #10000
 
 logging:
   level: INFO

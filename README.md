@@ -48,6 +48,15 @@ chmod +x scripts/run_train.sh
 ./scripts/run_train.sh
 ```
 
+3. Generate Explanations (Hybrid XAI)
+
+Runs the trained agent, computes SHAP values for actions, and generates a dashboard video.
+
+```
+python3 scripts/explain_agent.py
+```
+Output video will be saved to `outputs/explanation_video.mp4`.
+
 ## Tasks
 
 - Env/Training
