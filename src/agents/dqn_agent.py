@@ -59,17 +59,22 @@ class DQNAgent:
         self.config = config
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+        def get_cfg_val(obj, key, default=None):
+            if isinstance(obj, dict):
+                return obj.get(key, default)
+            return getattr(obj, key, default)
+
         # DQN hyperparameters (with reasonable fallbacks)
-        agent_cfg = getattr(config, "agent", {})
-        self.gamma = float(getattr(agent_cfg, "gamma", 0.99))
-        self.lr = float(getattr(agent_cfg, "lr", 1e-3))
-        self.batch_size = int(getattr(agent_cfg, "batch_size", 64))
-        self.buffer_size = int(getattr(agent_cfg, "buffer_size", 100000))
-        self.eps_start = float(getattr(agent_cfg, "eps_start", 1.0))
-        self.eps_end = float(getattr(agent_cfg, "eps_end", 0.05))
-        self.eps_decay = float(getattr(agent_cfg, "eps_decay", 50000))
+        agent_cfg = get_cfg_val(config, "agent", {})
+        self.gamma = float(get_cfg_val(agent_cfg, "gamma", 0.99))
+        self.lr = float(get_cfg_val(agent_cfg, "lr", 1e-3))
+        self.batch_size = int(get_cfg_val(agent_cfg, "batch_size", 64))
+        self.buffer_size = int(get_cfg_val(agent_cfg, "buffer_size", 100000))
+        self.eps_start = float(get_cfg_val(agent_cfg, "eps_start", 1.0))
+        self.eps_end = float(get_cfg_val(agent_cfg, "eps_end", 0.05))
+        self.eps_decay = float(get_cfg_val(agent_cfg, "eps_decay", 50000))
         self.target_update_interval = int(
-            getattr(agent_cfg, "target_update_interval", 1000)
+            get_cfg_val(agent_cfg, "target_update_interval", 1000)
         )
 
         # Infer dimensions from spaces (assume Box + Discrete)
@@ -82,7 +87,7 @@ class DQNAgent:
             raise ValueError("DQNAgent expects a discrete action space")
         action_dim = int(action_space.n)
 
-        hidden_dim = int(getattr(agent_cfg, "hidden_dim", 256))
+        hidden_dim = int(get_cfg_val(agent_cfg, "hidden_dim", 256))
         self.obs_dim = obs_dim
         self.q_net = QNetwork(self.obs_dim, action_dim, hidden_dim).to(self.device)
         self.target_net = QNetwork(self.obs_dim, action_dim, hidden_dim).to(self.device)

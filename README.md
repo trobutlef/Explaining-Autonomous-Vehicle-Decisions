@@ -1,78 +1,68 @@
-# Explaining-Autonomous-Vehicle-Decisions
+# Explaining Autonomous Vehicle Decisions: XAI for Perception and Action
 
-XAI for autonomous vehicle decisions using a lightweight simulator and standard explanation methods (Grad-CAM, SHAP/LIME).
+This project implements Explainable AI (XAI) techniques to interpret the decisions of an autonomous driving agent in the MetaDrive environment. It covers both perception (visual attention) and action (decision-making) explainability.
 
-## What we're building
+## Project Structure
 
-- **Simulator-first (Option A)**: Train an agent in `highway-env` (Gymnasium) and generate explanations.
-- **Perception explanations**: Grad-CAM on CNN features from simulator frames.
-- **Action explanations**: SHAP/LIME on tabular state features feeding the policy/Q-network.
+This project unifies Perception and Action explainability within the MetaDrive simulation environment. Instead of separate phases, we apply both visual and feature-based XAI techniques to driving agents to understand their behavior holistically.
 
-## Repo structure (who does what)
+- **`notebooks/`**: Contains the main executable Jupyter notebooks.
+  - `01_metadrive_general_xai.ipynb`: **General Simulation XAI (Perception + Action).** Demonstrates the full XAI pipeline on a general MetaDrive agent (IDM Policy).
+    - **Perception:** Uses **Grad-CAM** on the 3D driver's view to show visual attention.
+    - **Action:** Uses **SHAP & LIME** to explain driving decisions based on state features (Lidar, Speed, Steering).
+  - `02_metadrive_pretrained_agent_xai.ipynb`: **Trained Agent XAI (Perception + Action).** Applies the same XAI pipeline to your **pretrained DQN agent**.
+    - **Perception:** Visualizes the agent's context using **Grad-CAM** on the simulation frames.
+    - **Action:** Explains the specific Q-network decisions using **SHAP (DeepExplainer)**.
+  - `bdd100k_gradcam.ipynb`: **Supplementary: Real-World Perception.** Applies Grad-CAM to real-world driving images from the BDD100K dataset for comparison.
+- **`src/`**: Source code for agents, environments, and XAI utilities.
+- **`outputs/`**: Generated results, including videos and models.
+  - `simulation_general.mp4`: Raw video of the general simulation.
+  - `gradcam_general.mp4`: Grad-CAM overlay video for the general simulation.
+  - `simulation_agent.mp4`: Raw video of the pretrained agent.
+  - `gradcam_agent.mp4`: Grad-CAM overlay video for the pretrained agent.
+- **`configs/`**: Configuration files (YAML).
+- **`environment.yml`**: List of Python dependencies.
 
-- **configs/**: YAML configs (env, agent, logging, XAI toggles).
-- **scripts/run_train.sh**: Entrypoint to run training.
-- **src/envs/highway_env.py**: Build and wrap the `highway-env` environment. [Owner: Env/Training]
-- **src/agents/dqn_agent.py**: DQN agent (network, replay, act/learn, save/load). [Owner: Agent]
-- **src/training/train_highway.py**: Training loop, eval, checkpoints, logging. [Owner: Env/Training]
-- **src/utils/config.py**: Load YAML config. [Owner: Env/Training]
-- **src/utils/logging.py**: Project logger. [Owner: Env/Training]
-- **src/xai/grad_cam.py**: Grad-CAM for CNN perception. [Owner: XAI]
-- **src/xai/shap_lime.py**: SHAP/LIME for state features. [Owner: XAI]
-- **src/visualization/dashboard.py**: Overlay saliency on frames + action timeline. [Owner: XAI]
-- **tests/**: Sanity tests and unit tests.
+## Installation
 
-## Datasets
+1.  **Prerequisites:** Python 3.8+
+2.  **Install Dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    # OR using conda/mamba
+    conda env create -f environment.yml
+    conda activate xai_autonomous_vehicle
+    ```
+3.  **MetaDrive:** Ensure MetaDrive is installed. If using the specific version from this project:
+    ```bash
+    pip install git+https://github.com/metadriverse/metadrive.git
+    ```
 
-- **Primary (perception subset)**
-  - BDD100K (use ~10k images subset): https://github.com/bdd100k/bdd100k | https://www.kaggle.com/datasets/solesensei/solesensei_bdd100k
-  - KITTI (small detection subset): http://www.cvlibs.net/datasets/kitti/
-  - nuScenes mini (≈7 GB): https://www.nuscenes.org/download
-- **Simulator state (tabular)**
-  - Logged directly from `highway-env` (e.g., speed, distances, lane index). Used for SHAP/LIME.
+## Dataset Usage
 
-## How to run or setup
+- **MetaDrive:** The simulation environment generates synthetic data (images and vector states) on the fly. No external download is required for the main simulation notebooks.
+- **BDD100K (Optional for `bdd100k_gradcam.ipynb`):** This notebook uses a subset of the BDD100K dataset.
+  - **Status:** A small subset is included in `data/bdd100k_subset` (if available).
+  - **Manual Download:** If you wish to run this on the full dataset, please download it from [BDD100K Website](https://bdd-data.berkeley.edu/) and update the path in `configs/config.yaml`.
 
-1. Create env and install deps
+## How to Run
 
-```
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
+1.  **Navigate to the project root.**
+2.  **Launch Jupyter Notebook:**
+    ```bash
+    jupyter notebook
+    ```
+3.  **Open and Run:**
+    - `notebooks/01_metadrive_general_xai.ipynb`
+    - `notebooks/02_metadrive_pretrained_agent_xai.ipynb`
 
-2. Train (uses configs/config.yaml)
+## Results for Presentation
 
-```
-chmod +x scripts/run_train.sh
-./scripts/run_train.sh
-```
+- **Videos:** Check the `outputs/` directory for MP4 videos of the driving agents with and without Grad-CAM overlays.
+- **Plots:** SHAP and LIME feature importance plots are generated inline within the notebooks. You can save these images directly from the notebook (Right-click -> Save Image).
 
-3. Generate Explanations (Hybrid XAI)
+## Code Explanations
 
-Runs the trained agent, computes SHAP values for actions, and generates a dashboard video.
-
-```
-python3 scripts/explain_agent.py
-```
-Output video will be saved to `outputs/explanation_video.mp4`.
-
-## Tasks
-
-- Env/Training
-  - Implement `highway_env.make_env`
-  - Implement `utils.config.load_config`, `utils.logging.get_logger`
-  - Implement `DQNAgent` and `train_highway.py`
-- XAI/Visualization
-  - Implement `xai/grad_cam.py`, `xai/shap_lime.py`
-  - Implement `visualization/dashboard.py`
-  - Prepare a small BDD100K/KITTI/nuScenes-mini subset for Grad-CAM demos
-
-## Simulator reference
-
-- highway-env: https://github.com/Farama-Foundation/HighwayEnv
-
-## Notes
-
-- Keep explanations optional via `configs/config.yaml` (`xai.enable_*` flags).
-- Save logs/checkpoints to `logs/` and `outputs/` (gitignored).
+- **Grad-CAM:** Visualizes which parts of the camera input the model focuses on. Implemented using `pytorch-grad-cam` on a proxy ResNet model.
+- **SHAP (SHapley Additive exPlanations):** Assigns importance values to each state feature (e.g., speed, steering, lidar points) to explain the agent's action.
+- **LIME (Local Interpretable Model-agnostic Explanations):** Approximates the complex model locally with a simple linear model to explain individual predictions.

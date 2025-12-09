@@ -4,8 +4,9 @@ project:
   output_dir: outputs
 
 environment:
-  name: roundabout-v0
-  wrappers: []
+  name: metadrive
+  map: S
+  traffic_density: 0.1
   render: false
 
 agent:

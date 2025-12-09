@@ -6,7 +6,7 @@ import numpy as np
 import torch
 
 from src.utils.config import load_config
-from src.envs.highway_env import make_env
+from src.envs.metadrive_env import make_env
 from src.agents.dqn_agent import DQNAgent
 
 

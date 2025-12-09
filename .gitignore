@@ -14,7 +14,9 @@ dist/
 
 # Data and logs
 logs/
-outputs/
+#outputs/
+gradcam/
+archive/
 checkpoints/
 wandb/
 data/*
